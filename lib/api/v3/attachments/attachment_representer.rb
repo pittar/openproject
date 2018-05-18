@@ -66,6 +66,8 @@ module API
                                       %i[work_package subject]
                                     when WikiPage
                                       %i[wiki_page title]
+                                    when Message
+                                      %i[post subject]
                                     end
 
             ::API::Decorators::LinkObject
