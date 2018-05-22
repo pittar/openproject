@@ -43,6 +43,8 @@ module WorkPackages
 
     validate :user_allowed_to_move
 
+    validate :validate_status_in_changed_type
+
     private
 
     def user_allowed_to_edit
@@ -74,6 +76,15 @@ module WorkPackages
          !@can.allowed?(model, :move)
 
         errors.add :project, :error_unauthorized
+      end
+    end
+
+    def validate_status_in_changed_type
+      # Checks that the issue can not be moved to a type with the status unchanged
+      # and the target type does not have this status
+      only_type_changed = model.type && model.type_id_changed? && !model.status_id_changed?
+      if only_type_changed && !model.type.statuses.exists?(model.status_id)
+        errors.add :status_id, :status_invalid_in_type
       end
     end
 
